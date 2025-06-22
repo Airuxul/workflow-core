@@ -23,11 +23,11 @@ class BaseWorkflow(ABC):
         self.manager = manager
         self.config = config
 
-    def log(self, message: str):
+    def log(self, *args, **kwargs):
         """
         将日志消息委托给管理器进行打印。
         """
-        self.manager.log(message)
+        self.manager.log(*args, **kwargs)
 
     def run_flow(self, workflow_class: Type[BaseWorkflow], params: dict | None = None) -> Any:
         """方便地调用管理器来执行一个子流程。"""

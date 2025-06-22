@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import json
-import re
 from pathlib import Path
 from datetime import datetime
 
 from core.workflow import BaseWorkflow
 from .video_copy_flow import VideoCopyFlow
+from core.utils import safe_filename
 
 class WallpaperVideoCopyFlow(BaseWorkflow):
     """
@@ -23,13 +23,6 @@ class WallpaperVideoCopyFlow(BaseWorkflow):
         "max_age_hours": 24,
     }
     
-    @staticmethod
-    def _sanitize_filename(name: str) -> str:
-        """
-        替换Windows文件名中的非法字符为空格。
-        """
-        return re.sub(r'[\\/*?:"<>|]', ' ', name)
-
     def run(self):
         """
         执行组合工作流。
@@ -64,7 +57,7 @@ class WallpaperVideoCopyFlow(BaseWorkflow):
                     self.log(f"- 跳过: {project_json_path} 中没有 'title' 字段。")
                     continue
                 
-                sanitized_title = self._sanitize_filename(title)
+                sanitized_title = safe_filename(title)
                 new_filename = sanitized_title + dest_file.suffix
                 new_dest_path = dest_file.parent / new_filename
 

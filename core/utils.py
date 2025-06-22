@@ -32,4 +32,27 @@ def parse_extra_args(extra_args: List[str]) -> dict:
             key = key_with_dashes[2:]
             if i + 1 < len(extra_args):
                 params[key] = extra_args[i+1]
-    return params 
+    return params
+
+def run_workflow(flow_name: str, cli_params: dict):
+    """
+    启动指定工作流，供 main.py/debug_main.py 复用。
+    """
+    from core.manager import WorkflowManager
+    try:
+        main_workflow_class = find_workflow_class(flow_name)
+        manager = WorkflowManager(cli_params=cli_params)
+        manager.run_flow(workflow_class=main_workflow_class)
+    except (FileNotFoundError, AttributeError) as e:
+        print(f"错误: {e}")
+    except Exception as e:
+        print(f"发生致命错误: {e}")
+        import traceback
+        traceback.print_exc()
+
+def safe_filename(name: str) -> str:
+    """
+    替换Windows文件名中的非法字符为空格。
+    """
+    import re
+    return re.sub(r'[\\/*?:"<>|]', ' ', name) 

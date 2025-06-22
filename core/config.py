@@ -5,7 +5,7 @@ import re
 
 class Config:
     """
-    一个分层的配置类，支持作用域链和“即时”参数解析。
+    一个分层的配置类，支持作用域链和"即时"参数解析。
     """
     def __init__(self, params: dict | None = None, parent: Config | None = None):
         """
@@ -16,11 +16,13 @@ class Config:
         self._params = params if params is not None else {}
 
     def _get_raw_param(self, key: str, default=None):
-        """仅获取原始参数，不进行解析。"""
+        """优先查找父级参数，再查本地参数。"""
+        if self._parent:
+            value = self._parent._get_raw_param(key, None)
+            if value is not None:
+                return value
         if key in self._params:
             return self._params[key]
-        if self._parent:
-            return self._parent._get_raw_param(key, default)
         return default
 
     def _resolve_placeholders(self, value_to_resolve):
@@ -51,7 +53,7 @@ class Config:
 
     def get_param(self, key: str, default=None):
         """
-        按优先级获取单个参数的原始值，并“即时”解析它。
+        按优先级获取单个参数的原始值，并"即时"解析它。
         """
         raw_value = self._get_raw_param(key, default)
         return self._resolve_placeholders(raw_value) 

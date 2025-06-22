@@ -82,4 +82,7 @@ dmypy.json
 
 # OS-specific files
 .DS_Store
-Thumbs.db 
+Thumbs.db
+temp/
+bats/
+debug_main.py

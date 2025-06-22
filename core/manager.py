@@ -20,12 +20,12 @@ class WorkflowManager:
     def _current_config(self) -> Config:
         return self._config_stack[-1]
 
-    def log(self, message: str):
+    def log(self, *args, **kwargs):
         """
-        以当前工作流的正确缩进级别打印日志消息。
+        以当前工作流的正确缩进级别打印日志消息，支持 print 的所有参数。
         """
         indent = '\t' * (self.flow_depth if self.flow_depth > 0 else 0)
-        print(f"{indent}{message}")
+        print(indent, *args, **kwargs)
 
     def set_shared_value(self, key: str, value):
         self._shared_context[key] = value
