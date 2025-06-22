@@ -2,53 +2,53 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>{post_title} - Iwara 排行榜</title>
+<title>%s - Iwara 排行榜</title>
 <style>
-body {{ font-family: 'Segoe UI', 'Arial', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f7f7fa; margin: 0; padding: 0; }}
-.container {{ max-width: 1200px; margin: 30px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; }}
-h2 {{ text-align: center; color: #333; margin-bottom: 24px; }}
-button {{margin: 10px 10px 20px 0; padding: 8px 18px; border: none; border-radius: 5px; background: #4f8cff; color: #fff; font-size: 16px; cursor: pointer; transition: background 0.2s;}}
-button:hover {{background: #2566d6;}}
-table {{border-collapse: collapse; width: 100%; background: #fff;}}
-th, td {{border: 1px solid #e0e0e0; padding: 8px 6px; text-align: center;}}
-th {{background: #f0f4fa; color: #333; font-weight: 600;}}
-tr:hover {{background: #f5faff;}}
-img {{max-width: 80px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);}}
-@media (max-width: 800px) {{
-  .container {{padding: 8px;}}
-  th, td {{font-size: 12px; padding: 4px;}}
-  img {{max-width: 40px;}}
-}}
+body { font-family: 'Segoe UI', 'Arial', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f7f7fa; margin: 0; padding: 0; }
+.container { max-width: 1200px; margin: 30px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; }
+h2 { text-align: center; color: #333; margin-bottom: 24px; }
+button {margin: 10px 10px 20px 0; padding: 8px 18px; border: none; border-radius: 5px; background: #4f8cff; color: #fff; font-size: 16px; cursor: pointer; transition: background 0.2s;}
+button:hover {background: #2566d6;}
+table {border-collapse: collapse; width: 100%%; background: #fff;}
+th, td {border: 1px solid #e0e0e0; padding: 8px 6px; text-align: center;}
+th {background: #f0f4fa; color: #333; font-weight: 600;}
+tr:hover {background: #f5faff;}
+img {max-width: 80px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);}
+@media (max-width: 800px) {
+  .container {padding: 8px;}
+  th, td {font-size: 12px; padding: 4px;}
+  img {max-width: 40px;}
+}
 </style>
 </head>
 <body>
 <div class="container">
-<h2>{post_title}</h2>
+<h2>%s</h2>
 <button onclick="showTable('view')">按播放量排序</button>
 <button onclick="showTable('likes')">按点赞排序</button>
 <div id="table-container"></div>
 </div>
 <script>
-const viewData = {view_data};
-const likesData = {likes_data};
-function renderTable(data) {{
+const viewData = %s;
+const likesData = %s;
+function renderTable(data) {
     let html = '<table><tr><th>排名</th><th>标题</th><th>播放量</th><th>点赞</th><th>视频链接</th><th>封面</th></tr>';
-    data.forEach((v, i) => {{
-        html += `<tr>`+
-            `<td>{{i+1}}</td>`+
-            `<td>{{v.title||''}}</td>`+
-            `<td>{{v.views||''}}</td>`+
-            `<td>{{v.likes||''}}</td>`+
-            `<td><a href=\"https://www.iwara.tv/video/{{v.video_id}}\" target=\"_blank\">链接</a></td>`+
-            `<td><img src=\"{{v.img_url||''}}\"></td>`+
-        `</tr>`;
-    }});
+    data.forEach((v, i) => {
+        html += '<tr>'+
+            '<td>'+(i+1)+'</td>'+
+            '<td>'+(v.title||'')+'</td>'+
+            '<td>'+(v.views||'')+'</td>'+
+            '<td>'+(v.likes||'')+'</td>'+
+            '<td><a href="https://www.iwara.tv/video/'+v.video_id+'" target="_blank">链接</a></td>'+
+            '<td><img src="'+(v.img_url||'')+'"></td>'+
+        '</tr>';
+    });
     html += '</table>';
     return html;
-}}
-function showTable(type) {{
+}
+function showTable(type) {
     document.getElementById('table-container').innerHTML = renderTable(type==='view'?viewData:likesData);
-}}
+}
 showTable('view');
 </script>
 </body>

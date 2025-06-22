@@ -15,6 +15,8 @@ class IwaraRankingPostFetchFlow(BaseWorkflow):
     自动获取Iwara Rank专用作者的最新排行榜文章，提取视频信息并批量下载。
     """
     DEFAULT_PARAMS = {
+        "username": "",       # Iwara邮箱
+        "password": "",       # Iwara密码
         "save_path": "downloads",
         "resolution": "Source"
     }
@@ -96,10 +98,11 @@ class IwaraRankingPostFetchFlow(BaseWorkflow):
         if os.path.exists(html_template_path):
             with open(html_template_path, 'r', encoding='utf-8') as f:
                 template = f.read()
-            html = template.format(
-                post_title=post_title,
-                view_data=json.dumps(view_sorted, ensure_ascii=False),
-                likes_data=json.dumps(likes_sorted, ensure_ascii=False)
+            html = template % (
+                post_title,
+                post_title,
+                json.dumps(view_sorted, ensure_ascii=False),
+                json.dumps(likes_sorted, ensure_ascii=False)
             )
         # 输出HTML
         output_html = f"{constants.TEMP_DIR}/{safe_filename(post_title)}.html"

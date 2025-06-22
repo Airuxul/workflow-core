@@ -81,7 +81,7 @@ class IwaraDownloadFlow(BaseWorkflow):
             download_link = "https:" + resource['src']['download']
             file_type = resource['type'].split('/')[1]
             video_file_name = info.get('title', video_id) + '.' + file_type
-            else:
+        else:
             # 兼容旧API
             files = info.get('files', [])
             download_link = None
@@ -93,6 +93,7 @@ class IwaraDownloadFlow(BaseWorkflow):
                 self.log(f"未找到分辨率为{resolution}的下载链接: {video_id}")
                 return
             video_file_name = info.get('title', video_id) + '.mp4'
+        
         # 清理文件名
         safe_title = "".join(c for c in video_file_name if c.isalnum() or c in (' ', '_', '-', '.')).rstrip()
         filename = os.path.join(save_path, safe_title)
