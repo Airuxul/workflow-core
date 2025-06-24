@@ -116,10 +116,10 @@ class IwaraDownloadFlow(BaseWorkflow):
             os.makedirs(save_path)
         max_retries = 3
         chunk_size = 128 * 1024  # 128KB，减少请求次数
+        temp_file = filename + ".part"
         for attempt in range(max_retries):
             try:
                 # 断点续传逻辑
-                temp_file = filename + ".part"
                 mode = 'ab'  # 追加写
                 downloaded = 0
                 if os.path.exists(temp_file):
@@ -155,8 +155,6 @@ class IwaraDownloadFlow(BaseWorkflow):
                                 f.write(chunk)
                                 if pbar is not None:
                                     pbar.update(len(chunk))
-                # 下载完成后重命名
-                os.rename(temp_file, filename)
                 self.tqdm_log(f"下载完成: {filename}")
                 break  # 成功则跳出重试循环
             except IncompleteRead as e:
@@ -183,6 +181,9 @@ class IwaraDownloadFlow(BaseWorkflow):
                     time.sleep(2)
                 else:
                     self.tqdm_log(f"多次重试后仍失败: {filename}")
+            finally:
+                if os.path.exists(temp_file):
+                    os.rename(temp_file, filename)
 
     def get_log_indent(self):
         """获取当前工作流的缩进字符串，便于日志和进度条统一风格。"""
