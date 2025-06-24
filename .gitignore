@@ -84,5 +84,4 @@ dmypy.json
 .DS_Store
 Thumbs.db
 temp/
-bats/
-debug_main.py
+test/

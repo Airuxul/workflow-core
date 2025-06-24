@@ -54,7 +54,7 @@ class IwaraRankingPostFetchFlow(BaseWorkflow):
         "save_path": "downloads", # 可选，下载保存路径
         "resolution": "Source", # 可选，下载清晰度
         "max_rank": 10, # 可选，只下载排名小于等于此值的视频（PICKUP视频不受此限制）
-        "enable_download": True # 可选，是否启用自动下载功能
+        "enable_download": False # 可选，是否启用自动下载功能
     }
 
     def get_latest_post(self):
