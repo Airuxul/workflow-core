@@ -21,7 +21,7 @@ class BearerAuth(AuthBase):
         r.headers['Authorization'] = 'Bearer ' + self.token
         return r
 
-class IwaraDownloadFlow(BaseWorkflow):
+class IwaraVideoDownloadFlow(BaseWorkflow):
     """
     通过邮箱和密码登录 Iwara API，批量下载指定 video_ids 的视频。
     """

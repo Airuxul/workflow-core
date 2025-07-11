@@ -8,7 +8,7 @@ from dataclasses import dataclass, asdict
 from typing import Optional
 from core import constants
 from core.workflow import BaseWorkflow
-from .iwara_download_flow import IwaraDownloadFlow
+from .iwara_video_download_flow import IwaraVideoDownloadFlow
 
 
 @dataclass
@@ -239,7 +239,7 @@ class IwaraRankingPostFetchFlow(BaseWorkflow):
             if filtered_videos:
                 video_ids = ','.join([v.video_id for v in filtered_videos])
                 self.log(f"准备下载 {len(filtered_videos)} 个视频 (max_rank={max_rank})")
-                self.run_flow(IwaraDownloadFlow, params={
+                self.run_flow(IwaraVideoDownloadFlow, params={
                     "video_ids": video_ids,
                     "save_path": self.get_param("save_path"),
                     "resolution": self.get_param("resolution")
