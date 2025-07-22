@@ -58,6 +58,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# uv package manager
+.python-version
+uv.lock
+
 # VS Code
 .vscode/
 # except for shared settings
@@ -83,5 +87,7 @@ dmypy.json
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# Project specific
 temp/
 test/

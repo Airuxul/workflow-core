@@ -1,0 +1,17 @@
+[project]
+name = "workflow-core"
+version = "0.1.0"
+description = "一个基于Python的工作流核心框架，支持多种自动化任务流程"
+readme = "README.md"
+authors = [
+    { name = "'Airuxul'", email = "804754746@qq.com" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.32.4",
+    "tqdm>=4.67.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.0,<0.9"]
+build-backend = "uv_build"
