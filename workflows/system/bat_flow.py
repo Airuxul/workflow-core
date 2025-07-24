@@ -45,11 +45,18 @@ class BatFlow(BaseWorkflow):
 
     def _run_and_log(self, cmd):
         """
-        执行命令并实时将输出转发到日志。
+        执行命令并实时将输出转发到日志，自动兼容utf-8/gbk。
         """
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        for line in p.stdout:
-            self.log(line.rstrip())
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        for raw_line in p.stdout:
+            try:
+                line = raw_line.decode('utf-8').rstrip()
+            except UnicodeDecodeError:
+                try:
+                    line = raw_line.decode('gbk').rstrip()
+                except Exception:
+                    line = f"[解码失败]{raw_line}"
+            self.log(line)
         p.wait()
 
     def on_cmd_finished(self):
