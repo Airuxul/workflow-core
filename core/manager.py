@@ -5,7 +5,6 @@ from typing import Type, Any
 from core.config import Config
 from core.workflow import BaseWorkflow
 from core.logger import WorkflowLogger
-import sys
 
 class WorkflowManager:
     def __init__(self, cli_params: dict | None = None):
@@ -43,7 +42,7 @@ class WorkflowManager:
         flow_config = None
 
         try:
-            default_params = getattr(workflow_class, "DEFAULT_PARAMS", {})
+            default_params = workflow_class.default_params()
             all_flow_params = {**default_params, **(flow_params or {})}
             flow_config = Config(params=all_flow_params, parent=self._current_config)
             self._config_stack.append(flow_config)

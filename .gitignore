@@ -90,6 +90,5 @@ Thumbs.db
 
 # Project specific
 temp/
-test/
 logs/
 data/

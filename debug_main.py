@@ -9,5 +9,11 @@ def debug_main():
     }
     run_workflow(params)
 
+def debug_trigger():
+    params = {
+        "flow": "test.test_interval_trigger_flow",
+    }
+    run_workflow(params)
+
 if __name__ == "__main__":
-    debug_main()
+    debug_trigger()
