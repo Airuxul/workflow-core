@@ -4,6 +4,8 @@ from __future__ import annotations
 from typing import Type, Any
 from core.config import Config
 from core.workflow import BaseWorkflow
+from core.logger import WorkflowLogger
+import sys
 
 class WorkflowManager:
     def __init__(self, cli_params: dict | None = None):
@@ -25,7 +27,7 @@ class WorkflowManager:
         以当前工作流的正确缩进级别打印日志消息，支持 print 的所有参数。
         """
         indent = '\t' * (self.flow_depth if self.flow_depth > 0 else 0)
-        print(indent, *args, **kwargs)
+        WorkflowLogger.instance().info(indent + ' '.join(str(a) for a in args))
 
     def set_shared_value(self, key: str, value):
         self._shared_context[key] = value
@@ -54,8 +56,7 @@ class WorkflowManager:
 
         except Exception as e:
             self.log(f"执行工作流 '{workflow_class.__name__}' 时发生未知错误: {e}")
-            import traceback
-            traceback.print_exc()
+            WorkflowLogger.instance().exception(e)
             return None
         finally:
             if flow_config and self._config_stack and self._config_stack[-1] is flow_config:

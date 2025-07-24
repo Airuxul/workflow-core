@@ -24,9 +24,6 @@ class BaseWorkflow(ABC):
         self.config = config
 
     def log(self, *args, **kwargs):
-        """
-        将日志消息委托给管理器进行打印。
-        """
         self.manager.log(*args, **kwargs)
 
     def run_flow(self, workflow_class: Type[BaseWorkflow], params: dict | None = None) -> Any:

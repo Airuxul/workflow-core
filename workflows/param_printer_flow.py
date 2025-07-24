@@ -11,4 +11,4 @@ class ParamPrinterFlow(BaseWorkflow):
         从配置中获取'msg'参数并打印。
         """
         message = self.get_param('msg', '没有提供消息。')
-        self.log(f"[打印机]: {message}")
+        self.log(f"[参数]: {message}")

@@ -2,6 +2,7 @@
 
 import importlib
 from typing import List
+from core.logger import WorkflowLogger
 from core.workflow import BaseWorkflow
 
 def flow_name_to_class_name(flow_name: str) -> str:
@@ -43,19 +44,38 @@ def parse_extra_args(extra_args: List[str]) -> dict:
                 params[key] = extra_args[i+1]
     return params
 
-def run_workflow(flow_name: str, cli_params: dict):
+def parse_cmd_args():
     """
-    启动指定工作流（通过类名字符串），供 main.py/debug_main.py 复用。
+    解析命令行所有 --key value 参数为 dict。
+    """
+    import argparse
+    parser = argparse.ArgumentParser(description="工作流执行引擎")
+    _, unknown = parser.parse_known_args()
+    params = {}
+    for i in range(0, len(unknown), 2):
+        key = unknown[i].lstrip('-')
+        if i + 1 < len(unknown):
+            params[key] = unknown[i+1]
+    return params
+
+def run_workflow(params: dict):
+    """
+    启动指定工作流。只接收一个包含flow和参数的dict。
     """
     from core.manager import WorkflowManager
+    flow_name = params.get('flow', None)
+    if not flow_name:
+        WorkflowLogger.instance().error("参数必须包含'flow'字段，且为工作流名称！")
+        return
+    cli_params = {k: v for k, v in params.items() if k != 'flow'}
     try:
         main_workflow_class = find_workflow_class(flow_name)
         manager = WorkflowManager(cli_params=cli_params)
         manager.run_flow(workflow_class=main_workflow_class)
     except (FileNotFoundError, AttributeError) as e:
-        print(f"错误: {e}")
+        WorkflowLogger.instance().error(f"错误: {e}")
     except Exception as e:
-        print(f"发生致命错误: {e}")
+        WorkflowLogger.instance().error(f"发生致命错误: {e}")
         import traceback
         traceback.print_exc()
 
@@ -64,4 +84,4 @@ def safe_filename(name: str) -> str:
     替换Windows文件名中的非法字符为空格。
     """
     import re
-    return re.sub(r'[\\/*?:"<>|]', ' ', name) 
+    return re.sub(r'[\\/*?:"<>|]', ' ', name)
