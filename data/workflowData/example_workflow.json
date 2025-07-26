@@ -1,0 +1,6 @@
+{
+    "flow": "demo.simple_example_flow",
+    "message": "来自JSON配置的问候",
+    "user_name": "JSON用户",
+    "repeat_count": 3
+} 

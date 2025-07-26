@@ -1,0 +1,5 @@
+{
+  "flow": "demo.demo_shared_context_flow",
+  "session_id": "webhook_session",
+  "user_name": "Webhook用户"
+}
