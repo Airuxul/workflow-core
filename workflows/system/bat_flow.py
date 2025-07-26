@@ -3,13 +3,14 @@
 from core.workflow import BaseWorkflow
 import subprocess
 import threading
+import platform
 
 class BatFlow(BaseWorkflow):
     """
     执行一条bat/shell命令。
     支持wait参数，wait=True时等待命令执行完。
     支持close参数，close=True时窗口自动关闭。
-    支持finished_event参数，finished_event=True时触发事件。
+    支持finished_func参数，命令完成后执行回调函数。
     """
     DEFAULT_PARAMS = {
         "wait": True,
@@ -18,51 +19,63 @@ class BatFlow(BaseWorkflow):
     }
 
     def run(self):
-        """
-        从配置中读取'cmd'参数并执行。
-        支持wait参数，wait=True时等待命令执行完。
-        支持close参数，close=True时窗口自动关闭。
-        支持异步+回调：wait=False时用线程异步执行，命令结束后自动回调。
-        输出实时转发到日志。
-        """
+        """执行命令，支持同步和异步模式"""
         cmd = self.get_param('cmd')
-        wait = self.get_param('wait', False)
-        close = self.get_param('close', True)
-        if cmd:
-            self.log(f"$ {cmd}")
-            if wait:
-                self._run_and_log(cmd)
-                if close:
-                    self.on_cmd_finished()
-            else:
-                def run_and_callback():
-                    self._run_and_log(cmd)
-                    if close:
-                        self.on_cmd_finished()
-                threading.Thread(target=run_and_callback, daemon=True).start()
-        else:
+        if not cmd:
             self.log("错误：'BatFlow' 工作流需要一个 'cmd' 参数。")
+            return
+        
+        wait = self.get_param('wait', True)
+        close = self.get_param('close', True)
+        
+        self.log(f"$ {cmd}")
+        
+        if wait:
+            # 同步执行
+            self._run_and_log(cmd)
+            if close:
+                self._call_finished_callback()
+        else:
+            # 异步执行
+            threading.Thread(
+                target=self._async_run, 
+                args=(cmd, close), 
+                daemon=True
+            ).start()
+
+    def _async_run(self, cmd, close):
+        """异步执行命令"""
+        self._run_and_log(cmd)
+        if close:
+            self._call_finished_callback()
 
     def _run_and_log(self, cmd):
-        """
-        执行命令并实时将输出转发到日志，自动兼容utf-8/gbk。
-        """
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        for raw_line in p.stdout:
-            try:
-                line = raw_line.decode('utf-8').rstrip()
-            except UnicodeDecodeError:
-                try:
-                    line = raw_line.decode('gbk').rstrip()
-                except Exception:
-                    line = f"[解码失败]{raw_line}"
-            self.log(line)
-        p.wait()
+        """执行命令并实时将输出转发到日志"""
+        try:
+            # 根据操作系统选择合适的编码
+            encoding = 'gbk' if platform.system() == "Windows" else 'utf-8'
+            
+            process = subprocess.Popen(
+                cmd, 
+                shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.STDOUT, 
+                encoding=encoding, 
+                errors='replace'
+            )
+            
+            # 实时输出日志
+            for line in process.stdout:
+                if line.strip():
+                    self.log(line.strip())
+            
+            process.wait()
+            
+        except Exception as e:
+            self.log(f"命令执行出错: {e}")
 
-    def on_cmd_finished(self):
-        """
-        命令执行完成后的回调，wait=True且close=True时触发。
-        """
+    def _call_finished_callback(self):
+        """调用完成回调函数"""
         finished_func = self.get_param('finished_func')
         if finished_func:
             finished_func()

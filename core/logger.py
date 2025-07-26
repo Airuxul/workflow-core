@@ -24,25 +24,36 @@ class WorkflowLogger:
         from loguru import logger
         import sys
         import os
+        
         os.makedirs('logs', exist_ok=True)
         logger.remove()
-        logger.add(sys.stdout, format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>", level="INFO", backtrace=False, diagnose=False)
-        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="INFO", format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}")
-        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="ERROR", format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {file}:{line} | {message}")
+        
+        # 控制台日志配置
+        console_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
+        logger.add(sys.stdout, format=console_format, level="INFO", backtrace=False, diagnose=False)
+        
+        # 文件日志配置
+        file_format = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}"
+        error_format = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {file}:{line} | {message}"
+        
+        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="INFO", format=file_format)
+        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="ERROR", format=error_format)
+        
         WorkflowLogger._inited = True
 
-    def info(self, msg):
+    def _log(self, level, msg):
+        """统一的日志记录方法"""
         from loguru import logger
-        logger.info(msg)
+        getattr(logger, level)(msg)
+
+    def info(self, msg):
+        self._log('info', msg)
 
     def warning(self, msg):
-        from loguru import logger
-        logger.warning(msg)
+        self._log('warning', msg)
 
     def error(self, msg):
-        from loguru import logger
-        logger.error(msg)
+        self._log('error', msg)
 
     def exception(self, msg):
-        from loguru import logger
-        logger.exception(msg) 
+        self._log('exception', msg) 
