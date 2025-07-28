@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from workflows.system.bat_flow import BatFlow
+from core.constants import WorkflowStatus
 import os
 
 class BaseGitFlow(BatFlow):
@@ -57,7 +58,61 @@ class BaseGitFlow(BatFlow):
         self.log(f"仓库路径: {self.repo_path}")
         self.log(f"执行命令: {git_cmd}")
         
-        return self._execute_command(git_cmd)
+        # 执行命令并捕获输出
+        result = self._execute_command_with_output(git_cmd)
+        return result
+    
+    def _execute_command_with_output(self, cmd):
+        """执行命令并捕获输出"""
+        import subprocess
+        import platform
+        
+        try:
+            # 根据操作系统选择合适的编码
+            encoding = 'gbk' if platform.system() == "Windows" else 'utf-8'
+            
+            process = subprocess.Popen(
+                cmd, 
+                shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.STDOUT, 
+                encoding=encoding, 
+                errors='replace'
+            )
+            
+            # 捕获输出
+            output, _ = process.communicate()
+            output = output.strip()
+            
+            # 记录输出到日志
+            if output:
+                for line in output.split('\n'):
+                    if line.strip():
+                        self.log(line.strip())
+            
+            # 返回执行结果
+            if process.returncode == 0:
+                return {
+                    "status": WorkflowStatus.SUCCESS.value, 
+                    "message": "Git命令执行成功", 
+                    "output": output,
+                    "returncode": process.returncode
+                }
+            else:
+                return {
+                    "status": WorkflowStatus.ERROR.value, 
+                    "message": f"Git命令执行失败，返回码: {process.returncode}", 
+                    "output": output,
+                    "returncode": process.returncode
+                }
+                
+        except Exception as e:
+            self.log(f"Git命令执行出错: {e}")
+            return {
+                "status": WorkflowStatus.ERROR.value, 
+                "message": f"Git命令执行异常: {str(e)}",
+                "output": ""
+            }
     
     def _format_success_result(self, operation, **extra_data):
         """格式化成功结果"""

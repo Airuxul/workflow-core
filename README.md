@@ -130,22 +130,22 @@ workflow-core/
 
 ```bash
 # 运行简单示例
-uv run python main.py --flow demo.demo_simple_example_flow
+uv run python main.py -flow demo.demo_simple_example_flow
 
 # 运行参数演示
-uv run python main.py --flow demo.demo_parameter_flow
+uv run python main.py -flow demo.demo_parameter_flow
 
 # 运行共享上下文演示
-uv run python main.py --flow demo.demo_shared_context_flow
+uv run python main.py -flow demo.demo_shared_context_flow
 
 # 运行异步处理演示
-uv run python main.py --flow demo.demo_async_flow
+uv run python main.py -flow demo.demo_async_flow
 
 # 运行系统工作流演示
-uv run python main.py --flow demo.demo_system_workflow_flow
+uv run python main.py -flow demo.demo_system_workflow_flow
 
 # 运行触发器演示
-uv run python main.py --flow demo.demo_trigger_flow
+uv run python main.py -flow demo.demo_trigger_flow
 ```
 
 ## 📞 联系方式

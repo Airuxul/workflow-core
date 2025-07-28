@@ -2,6 +2,15 @@
 
 from workflows.git.base_git_flow import BaseGitFlow
 from core.constants import WorkflowStatus
+from enum import Enum
+
+# Git分支操作类型枚举
+class GitBranchOperation(Enum):
+    LIST = 'list'
+    CHECK = 'check'
+    CREATE = 'create'
+    DELETE = 'delete'
+    SWITCH = 'switch'  # 替换原来的checkout
 
 class GitBranchFlow(BaseGitFlow):
     """
@@ -12,7 +21,7 @@ class GitBranchFlow(BaseGitFlow):
     
     DEFAULT_PARAMS = {
         "repository_path": ".",
-        "operation": "list",  # list, check, create, delete, checkout
+        "operation": GitBranchOperation.LIST.value,  # 使用字符串，在init中会处理
         "branch_name": None,
         "remote": False,      # 是否检查远程分支
         "create_branch": False,  # 是否创建新分支
@@ -36,16 +45,16 @@ class GitBranchFlow(BaseGitFlow):
     
     def execute_cmd(self):
         """执行Git分支操作"""
-        if self.operation == "list":
+        if self.operation == GitBranchOperation.LIST.value:
             return self._list_branches()
-        elif self.operation == "check":
+        elif self.operation == GitBranchOperation.CHECK.value:
             return self._check_branch()
-        elif self.operation == "create":
+        elif self.operation == GitBranchOperation.CREATE.value:
             return self._create_branch()
-        elif self.operation == "delete":
+        elif self.operation == GitBranchOperation.DELETE.value:
             return self._delete_branch()
-        elif self.operation == "checkout":
-            return self._checkout_branch()
+        elif self.operation == GitBranchOperation.SWITCH.value:
+            return self._switch_branch()
         else:
             return {"status": WorkflowStatus.ERROR.value, "message": f"不支持的操作: {self.operation}"}
     
@@ -71,10 +80,10 @@ class GitBranchFlow(BaseGitFlow):
         """创建分支"""
         if self.track_remote and self.remote_branch:
             # 创建并切换到跟踪远程分支的本地分支
-            git_args = ["checkout", "-b", self.branch_name, self.remote_branch]
+            git_args = ["switch", "-c", self.branch_name, self.remote_branch]
         else:
             # 创建新分支
-            git_args = ["checkout", "-b", self.branch_name]
+            git_args = ["switch", "-c", self.branch_name]
         return self._execute_git_cmd(*git_args)
     
     def _delete_branch(self):
@@ -87,7 +96,7 @@ class GitBranchFlow(BaseGitFlow):
         git_args.append(self.branch_name)
         return self._execute_git_cmd(*git_args)
     
-    def _checkout_branch(self):
+    def _switch_branch(self):
         """切换到分支"""
-        git_args = ["checkout", self.branch_name]
+        git_args = ["switch", self.branch_name]
         return self._execute_git_cmd(*git_args) 

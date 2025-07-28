@@ -4,7 +4,7 @@ from core.workflow import BaseWorkflow
 from core.constants import WorkflowStatus
 from workflows.git.git_status_flow import GitStatusFlow
 from workflows.git.git_reset_flow import GitResetFlow
-from workflows.git.git_branch_flow import GitBranchFlow
+from workflows.git.git_branch_flow import GitBranchFlow, GitBranchOperation
 from workflows.git.git_fetch_flow import GitFetchFlow
 
 class GitSwitchUpdateFlow(BaseWorkflow):
@@ -21,7 +21,6 @@ class GitSwitchUpdateFlow(BaseWorkflow):
     DEFAULT_PARAMS = {
         "repository_path": ".",
         "target_branch": "main",
-        "force_switch": False,
         "preserve_submodules": True,
         "update_after_switch": True,
         "quiet": False
@@ -30,7 +29,6 @@ class GitSwitchUpdateFlow(BaseWorkflow):
     def init(self):
         self.repository_path = self.get_param("repository_path")
         self.target_branch = self.get_param("target_branch")
-        self.force_switch = self.get_param("force_switch")
         self.preserve_submodules = self.get_param("preserve_submodules")
         self.update_after_switch = self.get_param("update_after_switch")
         self.quiet = self.get_param("quiet")
@@ -166,7 +164,7 @@ class GitSwitchUpdateFlow(BaseWorkflow):
         # 检查目标分支是否存在
         branch_check_params = {
             "repository_path": self.repository_path,
-            "operation": "check",
+            "operation": GitBranchOperation.CHECK.value,
             "branch_name": self.target_branch,
             "remote": False,
             "quiet": self.quiet
@@ -179,11 +177,21 @@ class GitSwitchUpdateFlow(BaseWorkflow):
         branch_output = branch_check.get("output", "")
         branch_exists = self.target_branch in branch_output
         
-        if not branch_exists:
-            # 检查远程分支
+        if branch_exists:
+            # 本地分支存在，直接切换
+            self.log(f"本地分支 {self.target_branch} 存在，直接切换")
+            checkout_params = {
+                "repository_path": self.repository_path,
+                "operation": GitBranchOperation.SWITCH.value,
+                "branch_name": self.target_branch,
+                "quiet": self.quiet
+            }
+        else:
+            # 本地分支不存在，检查远程分支
+            self.log(f"本地分支 {self.target_branch} 不存在，检查远程分支")
             remote_check_params = {
                 "repository_path": self.repository_path,
-                "operation": "check",
+                "operation": GitBranchOperation.CHECK.value,
                 "branch_name": self.target_branch,
                 "remote": True,
                 "quiet": self.quiet
@@ -201,7 +209,7 @@ class GitSwitchUpdateFlow(BaseWorkflow):
                 # 创建并切换到远程分支
                 checkout_params = {
                     "repository_path": self.repository_path,
-                    "operation": "create",
+                    "operation": GitBranchOperation.CREATE.value,
                     "branch_name": self.target_branch,
                     "create_branch": True,
                     "track_remote": True,
@@ -212,14 +220,6 @@ class GitSwitchUpdateFlow(BaseWorkflow):
                 error_msg = f"错误：分支 {self.target_branch} 不存在"
                 self.log(error_msg)
                 return {"status": WorkflowStatus.ERROR.value, "message": error_msg}
-        else:
-            # 直接切换到现有分支
-            checkout_params = {
-                "repository_path": self.repository_path,
-                "operation": "checkout",
-                "branch_name": self.target_branch,
-                "quiet": self.quiet
-            }
         
         checkout_result = self._handle_operation("分支切换", self.run_flow, GitBranchFlow, checkout_params)
         if not self._is_success(checkout_result):
