@@ -30,10 +30,6 @@ class GitPullFlow(BaseGitFlow):
     
     def execute_cmd(self):
         """执行Git拉取操作"""
-        self.log("=" * 40)
-        self.log("开始执行Git拉取操作")
-        self.log("=" * 40)
-        
         # 构建命令参数
         args = []
         if self.branch:
@@ -44,14 +40,6 @@ class GitPullFlow(BaseGitFlow):
             args.append("--ff-only")
         if self.quiet:
             args.append("--quiet")
-        
-        # 记录参数信息
-        if self.branch:
-            self.log(f"目标分支: {self.branch}")
-        if self.rebase:
-            self.log("使用rebase模式")
-        if self.ff_only:
-            self.log("仅允许快进合并")
         
         # 执行Git拉取命令
         result = self._execute_git_cmd("pull", *args)

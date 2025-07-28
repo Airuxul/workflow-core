@@ -1,0 +1,12 @@
+{
+  "flow": "test.test_git_switch_update_flow",
+  "repository_path": ".",
+  "test_scenarios": [
+    "basic_switch",
+    "submodule_preserve",
+    "error_handling"
+  ],
+  "target_branch": "main",
+  "preserve_submodules": true,
+  "update_after_switch": true
+} 

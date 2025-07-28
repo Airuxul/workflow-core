@@ -32,10 +32,6 @@ class GitCloneFlow(BaseGitFlow):
     
     def execute_cmd(self):
         """执行Git克隆操作"""
-        self.log("=" * 40)
-        self.log("开始执行Git克隆操作")
-        self.log("=" * 40)
-        
         # 验证必要参数
         if not self.repo_url:
             error_msg = "错误：必须提供repository_url参数"
@@ -46,7 +42,6 @@ class GitCloneFlow(BaseGitFlow):
             # 从URL中提取仓库名作为默认目录
             repo_name = self.repo_url.split('/')[-1].replace('.git', '')
             self.target_dir = repo_name
-            self.log(f"未指定目标目录，使用默认目录: {self.target_dir}")
         
         # 构建命令参数
         args = []
@@ -57,13 +52,6 @@ class GitCloneFlow(BaseGitFlow):
         if self.quiet:
             args.append("--quiet")
         args.extend([self.repo_url, self.target_dir])
-        
-        # 记录参数信息
-        self.log(f"仓库URL: {self.repo_url}")
-        self.log(f"目标目录: {self.target_dir}")
-        self.log(f"分支: {self.branch}")
-        if self.depth:
-            self.log(f"克隆深度: {self.depth}")
         
         # 检查目标目录是否已存在
         if os.path.exists(self.target_dir):

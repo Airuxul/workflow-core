@@ -33,10 +33,6 @@ class GitPushFlow(BaseGitFlow):
     
     def execute_cmd(self):
         """执行Git推送操作"""
-        self.log("=" * 40)
-        self.log("开始执行Git推送操作")
-        self.log("=" * 40)
-        
         # 构建命令参数
         args = []
         if self.force:
@@ -51,15 +47,6 @@ class GitPushFlow(BaseGitFlow):
             args.extend([self.remote, self.branch])
         else:
             args.append(self.remote)
-        
-        # 记录参数信息
-        self.log(f"远程仓库: {self.remote}")
-        if self.branch:
-            self.log(f"目标分支: {self.branch}")
-        if self.force:
-            self.log("使用强制推送")
-        if self.set_upstream:
-            self.log("设置上游分支")
         
         # 执行Git推送命令
         result = self._execute_git_cmd("push", *args)

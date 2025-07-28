@@ -30,10 +30,6 @@ class GitStatusFlow(BaseGitFlow):
     
     def execute_cmd(self):
         """执行Git状态检查"""
-        self.log("=" * 40)
-        self.log("开始执行Git状态检查")
-        self.log("=" * 40)
-        
         # 构建命令参数
         args = []
         if self.porcelain:
@@ -44,16 +40,6 @@ class GitStatusFlow(BaseGitFlow):
             args.append("--verbose")
         if self.ignore_submodules:
             args.append("--ignore-submodules")
-        
-        # 记录参数信息
-        if self.porcelain:
-            self.log("使用porcelain格式输出")
-        if self.branch:
-            self.log("显示分支信息")
-        if self.verbose:
-            self.log("使用详细输出")
-        if self.ignore_submodules:
-            self.log("忽略子模块")
         
         # 执行Git状态命令
         result = self._execute_git_cmd("status", *args)

@@ -35,10 +35,6 @@ class GitCommitFlow(BaseGitFlow):
     
     def execute_cmd(self):
         """执行Git提交操作"""
-        self.log("=" * 40)
-        self.log("开始执行Git提交操作")
-        self.log("=" * 40)
-        
         # 验证提交信息
         if not self.message and not self.amend:
             error_msg = "错误：必须提供提交信息或使用amend模式"
@@ -47,7 +43,6 @@ class GitCommitFlow(BaseGitFlow):
         
         # 如果需要添加所有文件
         if self.add_all:
-            self.log("添加所有文件到暂存区...")
             add_result = self._execute_git_cmd("add", ".")
             
             if not isinstance(add_result, dict) or add_result.get("status") != "success":
@@ -67,18 +62,6 @@ class GitCommitFlow(BaseGitFlow):
             args.append("--no-verify")
         if self.message and not self.amend:
             args.extend(["-m", f'"{self.message}"'])
-        
-        # 记录参数信息
-        if self.message:
-            self.log(f"提交信息: {self.message}")
-        if self.add_all:
-            self.log("已添加所有文件")
-        if self.amend:
-            self.log("修改最后一次提交")
-        if self.allow_empty:
-            self.log("允许空提交")
-        if self.no_verify:
-            self.log("跳过钩子验证")
         
         # 执行Git提交命令
         result = self._execute_git_cmd("commit", *args)

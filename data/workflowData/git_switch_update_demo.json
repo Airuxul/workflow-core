@@ -1,0 +1,8 @@
+{
+  "flow": "demo.demo_git_switch_update_flow",
+  "repository_path": ".",
+  "target_branch": "main",
+  "preserve_submodules": true,
+  "update_after_switch": true,
+  "show_detailed_logs": true
+}
