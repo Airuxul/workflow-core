@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-def main():
-    from core.utils import parse_cmd_args, run_workflow
-    params = parse_cmd_args()
-    run_workflow(params)
+from core.utils import Utils
+from core.manager import WorkflowManager
 
 if __name__ == "__main__":
-    main()
+    params = Utils.parse_cmd_args()
+    WorkflowManager.run_workflow(params)

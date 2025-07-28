@@ -28,16 +28,19 @@ class WorkflowLogger:
         os.makedirs('logs', exist_ok=True)
         logger.remove()
         
+        # 统一的日志格式配置
+        formats = {
+            'console': "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",
+            'file': "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
+            'error': "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {file}:{line} | {message}"
+        }
+        
         # 控制台日志配置
-        console_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
-        logger.add(sys.stdout, format=console_format, level="INFO", backtrace=False, diagnose=False)
+        logger.add(sys.stdout, format=formats['console'], level="INFO", backtrace=False, diagnose=False)
         
         # 文件日志配置
-        file_format = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}"
-        error_format = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {file}:{line} | {message}"
-        
-        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="INFO", format=file_format)
-        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="ERROR", format=error_format)
+        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="INFO", format=formats['file'])
+        logger.add("logs/workflow.log", rotation="10 MB", encoding="utf-8", level="ERROR", format=formats['error'])
         
         WorkflowLogger._inited = True
 
@@ -46,14 +49,10 @@ class WorkflowLogger:
         from loguru import logger
         getattr(logger, level)(msg)
 
-    def info(self, msg):
-        self._log('info', msg)
-
-    def warning(self, msg):
-        self._log('warning', msg)
-
-    def error(self, msg):
-        self._log('error', msg)
-
-    def exception(self, msg):
-        self._log('exception', msg) 
+    def __getattr__(self, name):
+        """动态处理日志方法调用"""
+        if name in ['info', 'warning', 'error', 'exception', 'debug', 'critical']:
+            def log_method(msg):
+                self._log(name, msg)
+            return log_method
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'") 
