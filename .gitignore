@@ -91,3 +91,4 @@ Thumbs.db
 # Project specific
 temp/
 logs/
+data/workflowData/work
