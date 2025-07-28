@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from core.workflow import BaseWorkflow
+from core.constants import WorkflowStatus
 from workflows.system.bat_flow import BatFlow
 from workflows.system.sys_version_check_flow import SysVersionCheckFlow
 
@@ -110,7 +111,7 @@ class DemoSystemWorkflowFlow(BaseWorkflow):
         self.log("=" * 50)
         
         return {
-            "status": "success",
+            "status": WorkflowStatus.SUCCESS.value,
             "execution_stats": execution_stats,
             "message": "系统工作流功能演示完成"
         }

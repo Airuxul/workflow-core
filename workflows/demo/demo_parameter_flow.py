@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from core.workflow import BaseWorkflow
+from core.constants import WorkflowStatus
+from workflows.system.bat_flow import BatFlow
 
 class DemoParameterFlow(BaseWorkflow):
     """
@@ -72,7 +74,7 @@ class DemoParameterFlow(BaseWorkflow):
         self.log("=" * 50)
         
         return {
-            "status": "success",
+            "status": WorkflowStatus.SUCCESS.value,
             "greeting": greeting,
             "user_name": user_name,
             "endpoint": endpoint,

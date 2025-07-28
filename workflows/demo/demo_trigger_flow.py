@@ -4,6 +4,7 @@ import time
 import json
 import os
 from core.workflow import BaseWorkflow
+from core.constants import WorkflowStatus
 from workflows.trigger.interval_trigger_flow import IntervalTriggerWorkflow
 from workflows.trigger.webhook_trigger_flow import WebhookTriggerWorkflow
 
@@ -130,7 +131,7 @@ class DemoTriggerFlow(BaseWorkflow):
         self.log("=" * 50)
         
         return {
-            "status": "success",
+            "status": WorkflowStatus.SUCCESS.value,
             "trigger_stats": trigger_stats,
             "message": "触发器功能演示完成"
         } 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from core.workflow import BaseWorkflow
+from core.constants import WorkflowStatus
 from workflows.system.bat_flow import BatFlow
 
 class DemoSimpleExampleFlow(BaseWorkflow):
@@ -65,7 +66,7 @@ class DemoSimpleExampleFlow(BaseWorkflow):
         
         # 7. 返回结果
         result = {
-            "status": "success",
+            "status": WorkflowStatus.SUCCESS.value,
             "user_name": user_name,
             "greeting": greeting,
             "execution_count": execution_count,

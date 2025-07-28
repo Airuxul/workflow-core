@@ -2,6 +2,7 @@
 
 import time
 from core.workflow import BaseWorkflow
+from core.constants import WorkflowStatus
 from workflows.system.bat_flow import BatFlow
 
 class DemoSharedContextFlow(BaseWorkflow):
@@ -90,7 +91,7 @@ class DemoSharedContextFlow(BaseWorkflow):
         self.log("=" * 50)
         
         return {
-            "status": "success",
+            "status": WorkflowStatus.SUCCESS.value,
             "shared_values": shared_values,
-            "message": "共享上下文功能演示完成"
+            "message": "共享上下文演示完成"
         } 

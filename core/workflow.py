@@ -52,12 +52,16 @@ class BaseWorkflow(ABC):
         """从当前工作流的配置作用域中获取参数。"""
         return self.config.get_param(key, default)
 
+    def init(self):
+        """初始化工作流。"""
+        pass
+
     @abstractmethod
     def run(self) -> Any:
         """
         工作流的执行入口，所有业务逻辑都应在此方法中定义。
         """
-        pass 
+        pass
 
 class TriggerWorkflow(BaseWorkflow):
     """

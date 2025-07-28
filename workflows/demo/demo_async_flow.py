@@ -3,6 +3,7 @@
 import time
 import threading
 from core.workflow import BaseWorkflow
+from core.constants import WorkflowStatus
 from workflows.system.bat_flow import BatFlow
 
 class DemoAsyncFlow(BaseWorkflow):
@@ -74,7 +75,7 @@ class DemoAsyncFlow(BaseWorkflow):
         self.log("=" * 50)
         
         return {
-            "status": "success",
+            "status": WorkflowStatus.SUCCESS.value,
             "total_tasks": self.total_tasks,
             "completed_tasks": self.completed_tasks,
             "task_results": self.task_results,
