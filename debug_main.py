@@ -2,13 +2,6 @@
 
 from core.utils import run_workflow
 
-def debug_main():
-    # 直接在这里填写要调试的参数
-    params = {
-        "flow": "main_test_flow",
-    }
-    run_workflow(params)
-
 def debug_trigger():
     params = {
         "flow": "test.test_interval_trigger_flow",
@@ -21,5 +14,11 @@ def debug_shared_context():
     }
     run_workflow(params)
 
+def debug_git_workflow():
+    params = {
+        "flow_data": "data/workflowData/demo/demo_git_flow_data.json",
+    }
+    run_workflow(params)
+
 if __name__ == "__main__":
-    debug_shared_context()
+    debug_git_workflow()

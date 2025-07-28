@@ -10,4 +10,4 @@ class TestIntervalTriggerFlow(BaseWorkflow):
     }
 
     def run(self):
-        self.run_flow(IntervalTriggerWorkflow, {"trigger_workflow_data": "data/workflowData/test.json"})
+        self.run_flow(IntervalTriggerWorkflow, {"trigger_flow_data": "data/workflowData/demo_trigger_flow_data.json"})

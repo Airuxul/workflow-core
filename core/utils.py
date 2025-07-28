@@ -87,11 +87,11 @@ def run_workflow_from_dict(params: dict):
 
 def run_workflow(params: dict):
     """
-    工作流主入口。支持传入dict或通过workflow_data字段指定json文件。
+    工作流主入口。支持传入dict或通过flow_data字段指定json文件。
     """
-    workflow_data = params.get('workflow_data', None)
-    if workflow_data:
-        run_workflow_from_json(workflow_data)
+    flow_data = params.get('flow_data', None)
+    if flow_data:
+        run_workflow_from_json(flow_data)
     else:
         run_workflow_from_dict(params)
 

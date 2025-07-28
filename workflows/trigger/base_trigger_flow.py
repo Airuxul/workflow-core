@@ -11,7 +11,7 @@ class TriggerWorkflow(BaseWorkflow):
     TARGET_WORKFLOW = None  # 需指定目标workflow类
 
     DEFAULT_PARAMS = {
-        "trigger_workflow_data": None,
+        "trigger_flow_data": None,
         "sleep_interval": 1,
         "max_trigger_count": -1,
         "max_running_work_count": -1,
@@ -30,9 +30,9 @@ class TriggerWorkflow(BaseWorkflow):
         raise NotImplementedError
 
     def run(self):
-        trigger_workflow_data = self.get_param("trigger_workflow_data")
-        if not trigger_workflow_data:
-            self.log("trigger_workflow_data 参数未设置，无法启动触发器")
+        trigger_flow_data = self.get_param("trigger_flow_data")
+        if not trigger_flow_data:
+            self.log("trigger_flow_data 参数未设置，无法启动触发器")
             return
         sleep_interval = self.get_param("sleep_interval")
         if sleep_interval <= 0:
@@ -55,7 +55,7 @@ class TriggerWorkflow(BaseWorkflow):
             self.log("检测到触发条件，启动目标workflow...")
             self.run_flow(BatFlow, params={
                 "wait": False,
-                "cmd": f"uv run main.py --workflow_data {trigger_workflow_data}",
+                "cmd": f"uv run main.py --flow_data {trigger_flow_data}",
                 "finished_func": self.on_trigger_workflow_finished,
             })
             self.running_work_count += 1

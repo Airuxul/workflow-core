@@ -61,7 +61,7 @@ class DemoTriggerFlow(BaseWorkflow):
         self.log("  启动间隔触发器...")
         self.run_flow(IntervalTriggerWorkflow, {
             "interval": interval,
-            "trigger_workflow_data": trigger_file,
+            "trigger_flow_data": trigger_file,
             "max_trigger_count": max_triggers,
             "sleep_interval": 1
         })
@@ -87,7 +87,7 @@ class DemoTriggerFlow(BaseWorkflow):
         # 启动Webhook触发器
         self.run_flow(WebhookTriggerWorkflow, {
             "webhook_port": webhook_port,
-            "trigger_workflow_data": webhook_file,
+            "trigger_flow_data": webhook_file,
             "max_trigger_count": 1,
             "sleep_interval": 1
         })

@@ -1,0 +1,4 @@
+{
+    "flow": "demo.demo_async_flow",
+    "desc": "trigger中触发的工作流，以异步工作流为例"
+}

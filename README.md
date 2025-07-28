@@ -37,7 +37,7 @@ uv run python main.py --flow async_demo_flow
 uv run python main.py --flow demo_flow --param1 value1
 
 # 通过JSON数据启动
-uv run python main.py --workflow_data data/workflowData/example_workflow.json
+uv run python main.py --flow_data data/workflowData/example_workflow.json
 ```
 
 ### JSON文件格式

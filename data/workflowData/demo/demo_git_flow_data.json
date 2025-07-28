@@ -1,0 +1,9 @@
+{
+    "flow": "demo.demo_git_workflow_flow",
+    "repository_path": ".",
+    "commit_message": "自动提交更改",
+    "add_all": true,
+    "pull_before_commit": true,
+    "push_after_commit": true,
+    "check_status": true
+}

@@ -1,5 +1,0 @@
-{
-  "flow": "demo.demo_parameter_flow",
-  "greeting": "来自触发器的问候",
-  "user_name": "触发器用户"
-}
